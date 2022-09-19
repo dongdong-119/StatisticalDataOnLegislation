@@ -16,7 +16,7 @@ Statistical Data On Legislation Proposed By Members of National Assembly
 
 > <h5>2022.09.17. ~ 09.19.<h5> 
 <h6>- <국회의원 발의 법률안 API> 연동<h6>
-<h6>- 법률안 관련 통계 데이터 로직 개발, 구현, 테스트<h6>
+<h6>- 법률안 관련 통계 데이터(rateByArea, rateByProcess) 로직 개발, 구현, 테스트<h6>
 <h6>- <국회의원 발의 법률안 API> 명세서 수정<h6>
 
 > <h3>2022.09.20. ~ (개발중)<h3>
