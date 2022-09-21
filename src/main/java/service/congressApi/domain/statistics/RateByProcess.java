@@ -43,5 +43,4 @@ public class RateByProcess {
     // 기타(계류,)
     private float etc;
 
-
 }

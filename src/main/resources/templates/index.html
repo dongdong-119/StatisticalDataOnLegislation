@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header">
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+</head>
+<style>
+    .search-container {
+        position : absolute;
+        top : 40%;
+        left : 12%;
+        height : 500px;
+        max-width : 350px;
+
+        position : absolute;
+        top : 50%;
+        left : 50%;
+        transform : translate(-50%, -50%);
+    }
+
+    .forms {
+        width : 80%;
+        position : absolute;
+        top : 50%;
+        left : 50%;
+        transform : translate(-50%, -50%);
+    }
+
+    .form-group {
+        padding-top : 20px;
+        margin-bottom : 30px;
+
+    }
+
+    .name-button {
+        float :right;
+    }
+    #main-box {
+        background-color : lightblue;
+        border-radius : 10px;
+    }
+
+    #main-name {
+        text-align : center
+    }
+
+    #main-name .fw-bold {
+        font-size : 1.5em;
+    }
+
+    .fieldErr {
+        border-color : red;
+    }
+
+    #errorMessage {
+        color : red;
+    }
+
+</style>
+
+<body>
+
+<div class="container search-container" id="main-box">
+
+    <div class="forms">
+        <div id="main-name">
+            <p class="fw-bold">한눈에 보는 국회의원 발의</p>
+            <p class="fw-bold">법률안 통계 정보</p>
+        </div>
+        <form role="form" action="/memberInfo" method="post">
+            <div class="form-group group-for-name">
+                <label for="name">국회의원 이름을 입력하세요.</label>
+                <input type="text" th:class="${nameErr}? 'form-control fieldErr' : 'form-control'" id="name" name="memberName" placeholder="홍길동">
+                <div th:if="${nameErr}" id="nameErr">
+                    <p id="errorMessage">존재하지 않는 의원입니다.</p>
+                </div>
+            </div>
+            <div class="form-group group-for-party">
+                <label for="party">소속(정당명 혹은 무소속)을 선택하세요.</label>
+                <select class="form-control" id="party" name="memberParty">
+                    <option>소속</option>
+                    <option>더불어민주당</option>
+                    <option>국민의힘</option>
+                    <option>맛있당</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-light name-button">검색</button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>

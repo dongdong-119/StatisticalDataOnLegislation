@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html" charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrinkto-fit=no">
+
+    <!-- Resources -->
+    <script src="//cdn.amcharts.com/lib/4/core.js"></script>
+    <script src="//cdn.amcharts.com/lib/4/charts.js"></script>
+    <script src="//cdn.amcharts.com/lib/4/maps.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+
+<style>
+
+    .main-content {
+        margin-top : 40px;
+    }
+
+    .row {
+        margin-top : 40px;
+    }
+
+    #areaChartdiv {
+        width: 70%;
+        height: 400px;
+        margin : auto;
+    }
+
+    #processChartdiv {
+        width: 70%;
+        height: 300px;
+        margin : auto;
+    }
+
+</style>
+
+<body>
+
+
+<div class=" main-content container-fluid px-4">
+
+    <h1 th:text="${member.name} + '의원'" class="mt-4"></h1>
+    <p th:text="${member.partyName}"></p>
+
+    <div class="row">
+
+        <!-- 통계 개괄 -->
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-area me-1"></i>
+                    <strong>법률안 통계 개괄(21대 국회)</strong>
+                </div>
+                <div class="card-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>발의</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td th:text="${member.numberOfBill}">발의 수</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+
+        <!-- 분야별 법률안 통계 -->
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    <strong>분야별 법률안</strong>
+                </div>
+
+                <div class="card-body chart-case">
+                    <div id="areaChartdiv"></div>
+                </div>
+
+            </div>
+        </div>
+
+
+
+
+
+        <!-- 처리상태별 법률안 통계 -->
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    <strong>처리 상태별 법률안</strong>
+                </div>
+                <div class="card-body chart-case">
+                    <div id="processChartdiv"></div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- 준비중 -->
+        <div class="col-xl-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-chart-bar me-1"></i>
+                    준비중
+                </div>
+                <div class="card-body"><canvas id="myBarChart" width="100%" height="40"></canvas></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">다른 의원 정보 검색</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+
+        <!-- 기능 준비되면 활성화
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">Warning Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">Success Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-danger text-white mb-4">
+                <div class="card-body">Danger Card</div>
+                <div class="card-footer d-flex align-items-center justify-content-between">
+                    <a class="small text-white stretched-link" href="#">View Details</a>
+                    <div class="small text-white"><i class="fas fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        -->
+
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+
+    /**
+     * RateByArea
+     */
+    //데이터
+    var congress = [[${areaData.congress}]]
+    var law = [[${areaData.law}]]
+    var affairs = [[${areaData.stateAffairs}]]
+    var finance = [[${areaData.finance}]]
+    var education = [[${areaData.education}]]
+    var science = [[${areaData.scienceAndTech}]]
+    var diplomacy = [[${areaData.diplomacy}]]
+    var military = [[${areaData.military}]]
+    var admin = [[${areaData.administration}]]
+    var culture = [[${areaData.culture}]]
+    var food = [[${areaData.food}]]
+    var industry = [[${areaData.industry}]]
+    var health = [[${areaData.health}]]
+    var environment = [[${areaData.environment}]]
+    var traffic = [[${areaData.traffic}]]
+    var information = [[${areaData.information}]]
+    var gender = [[${areaData.gender}]]
+    var budget = [[${areaData.budget}]]
+    var etc = [[${areaData.etc}]]
+
+
+    // 차트
+    am5.ready(function() {
+
+        // Create root element
+        // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+        var root = am5.Root.new("areaChartdiv");
+
+
+        // Set themes
+        // https://www.amcharts.com/docs/v5/concepts/themes/
+        root.setThemes([
+            am5themes_Animated.new(root)
+        ]);
+
+
+        // Create chart
+        // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+        var chart = root.container.children.push(am5percent.PieChart.new(root, {
+            layout: root.verticalLayout
+        }));
+
+
+        // Create series
+        // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+        var series = chart.series.push(am5percent.PieSeries.new(root, {
+            alignLabels: true,
+            calculateAggregates: true,
+            valueField: "value",
+            categoryField: "category"
+        }));
+
+
+
+
+
+        series.slices.template.setAll({
+            strokeWidth: 3,
+            stroke: am5.color(0xffffff)
+        });
+
+        series.labelsContainer.set("paddingTop", 30)
+
+
+        // Set up adapters for variable slice radius
+        // https://www.amcharts.com/docs/v5/concepts/settings/adapters/
+        series.slices.template.adapters.add("radius", function (radius, target) {
+            var dataItem = target.dataItem;
+            var high = series.getPrivate("valueHigh");
+
+            if (dataItem) {
+                var value = target.dataItem.get("valueWorking", 0);
+                return radius * value / high
+            }
+            return radius;
+        });
+
+
+
+        // 데이터 설정
+        // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+        series.data.setAll([{
+            value: congress,
+            category: "의회",
+        }, {
+            value: law,
+            category: "법"
+        }, {
+            value: affairs,
+            category: "정무"
+        }, {
+            value: finance,
+            category: "재정"
+        }, {
+            value: education,
+            category: "교육"
+        }, {
+            value: science,
+            category: "과학"
+        }, {
+            value: diplomacy,
+            category: "외교"
+        }, {
+            value: military,
+            category: "국방"
+        }, {
+            value: admin,
+            category: "행정"
+        }, {
+            value: culture,
+            category: "문화"
+        }, {
+            value: food,
+            category: "식품"
+        }, {
+            value: industry,
+            category: "산업"
+        }, {
+            value: health,
+            category: "보건"
+        }, {
+            value: environment,
+            category: "환경"
+        }, {
+            value: traffic,
+            category: "교통"
+        }, {
+            value: information,
+            category: "정보"
+        }, {
+            value: gender,
+            category: "성별"
+        }, {
+            value: budget,
+            category: "예산"
+        }, {
+            value: etc,
+            category: "기타"
+        }
+        ]);
+
+
+        // Create legend
+        // https://www.amcharts.com/docs/v5/charts/percent-charts/legend-percent-series/
+        var legend = chart.children.push(am5.Legend.new(root, {
+            centerX: am5.p50,
+            x: am5.p50,
+            marginTop: 15,
+            marginBottom: 15
+        }));
+
+        legend.data.setAll(series.dataItems);
+
+
+        // Play initial series animation
+        // https://www.amcharts.com/docs/v5/concepts/animations/#Animation_of_series
+        series.appear(1000, 100);
+
+    }); // end am5.ready()
+
+
+
+
+
+
+    /**
+     * RateByProcess
+     */
+    // 데이터
+    var passNotRevised = [[${processData.passNotRevised}]];
+    var passRevised = [[${processData.passRevised}]];
+    var alternative = [[${processData.alternative}]];
+
+    // 국회 전체로 볼 때도 부결 데이터 0건이라(의원발의 한정) 아직은 제외
+    // var rejected = [[${processData.rejected}]]
+
+    var withdrawal = [[${processData.withdrawal}]];
+    var discard = [[${processData.discard}]];
+    var processEtc = [[${processData.etc}]];
+
+
+    //차트
+    am5.ready(function() {
+
+    // Create root element
+    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+        var root = am5.Root.new("processChartdiv");
+
+    // Set themes
+    // https://www.amcharts.com/docs/v5/concepts/themes/
+        root.setThemes([
+            am5themes_Animated.new(root)
+        ]);
+
+        // Create chart
+        // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/
+        var chart = root.container.children.push(
+            am5percent.PieChart.new(root, {
+                endAngle: 270
+            })
+        );
+        // Create series// https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Series
+        var series = chart.series.push(
+            am5percent.PieSeries.new(root, {
+                valueField: "value",
+                categoryField: "category",
+                endAngle: 270
+            })
+        );
+
+
+        series.states.create("hidden", {
+            endAngle: -90
+        });
+
+        // Set data
+        // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
+        series.data.setAll([{
+            category: "원안가결",
+            value: passNotRevised
+        }, {
+            category: "수정가결",
+            value: passRevised
+        }, {
+            category: "대안반영",
+            value: alternative
+        }, {
+            category: "철회",
+            value: withdrawal
+        }, {
+            category: "폐기",
+            value: discard
+        }, {
+            category: "기타",
+            value: processEtc
+        }]);
+
+        series.appear(1000, 100);
+
+    }); // end am5.ready()
+
+
+    /*]]>*/
+</script>
+
+
+</body>
+</html>

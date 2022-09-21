@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import service.congressApi.domain.BillApiV2;
 import service.congressApi.domain.form.BillForm;
 import service.congressApi.domain.form.BillFormV2;
+import service.congressApi.domain.repository.DataRepository;
 import service.congressApi.domain.repository.MemberRepository;
 
 
@@ -25,6 +26,12 @@ public class SaveBillRateTest {
 
     @Autowired
     private SaveBillRate saveBillRate;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    @Autowired
+    private DataRepository dataRepository;
 
 
     @Test
@@ -43,15 +50,39 @@ public class SaveBillRateTest {
 
     @Test
     @Transactional
-    public void 법률안_확인() throws Exception{
+    @Rollback(false)
+    public void 기본데이터_저장() throws Exception{
 
-        List<BillFormV2> entireBills = SaveBillRate.entireBills;
+        Member member1 = new Member("우상호");
+        member1.setPartyName("더불어민주당");
+        saveBillRate.save(member1);
 
-        List<BillFormV2> chulsu = BillApiV2.billByName("안철수", entireBills);
+        Member member2 = new Member("정진석");
+        member2.setPartyName("국민의힘");
+        saveBillRate.save(member2);
 
-        for(BillFormV2 bill : chulsu){
-            System.out.println(bill.getBillName());
+    }
+
+
+    @Test
+    @Transactional
+    public void bring_Data() throws Exception{
+        //given
+        List<Member> members = memberRepository.findByNameAndParty("우상호", "더불어민주당");
+
+        if(!members.isEmpty()){
+            Member member = members.get(0);
+            RateByArea areaData = dataRepository.findAreaData(member);
+            System.out.println(areaData.getDiplomacy());
+
+            RateByProcess processData = dataRepository.findProcessData(member);
+            System.out.println(processData.getEtc());
         }
+
+        //when
+
+        //then
+
     }
 
 

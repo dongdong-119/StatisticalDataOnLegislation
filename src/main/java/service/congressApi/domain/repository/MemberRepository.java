@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import service.congressApi.domain.statistics.Member;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import java.util.List;
 
 @Repository
@@ -18,13 +19,20 @@ public class MemberRepository {
     }
 
 
-    public Member findByName(String name){
-        return em.find(Member.class, name);
+    public List<Member> findByNameAndParty(String name, String party){
+        return em.createQuery("select m from Member m where m.name = :name" +
+                        " and m.partyName = :partyName", Member.class)
+                .setParameter("name", name)
+                .setParameter("partyName", party)
+                .getResultList();
     }
+
 
 
     public List<Member> findAll(){
         return em.createQuery("select m from Member m", Member.class).getResultList();
     }
+
+
 
 }

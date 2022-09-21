@@ -62,6 +62,9 @@ public class Member {
                 ", partyName='" + partyName + '\'' +
                 ", numberOfBill=" + numberOfBill +
                 ", rateByArea=" + rateByArea +
+                ", rateByProcess=" + rateByProcess +
                 '}';
     }
+
+
 }
