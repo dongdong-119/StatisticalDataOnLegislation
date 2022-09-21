@@ -18,6 +18,7 @@ Statistical Data On Legislation Proposed By Members of National Assembly
 <h6>- <국회의원 발의 법률안 API> 연동<h6>
 <h6>- 법률안 관련 통계 데이터(rateByArea, rateByProcess) 로직 개발, 구현, 테스트<h6>
 <h6>- <국회의원 발의 법률안 API> 명세서 수정<h6>
+<h6>- 테스트 데이터 DB 저장<h6>
 <h6>- 검색 페이지, 통계정보 페이지 구현<h6>
 <h6>- 통계정보 뷰 전달 로직 및 차트 구현<h6>
 
