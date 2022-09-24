@@ -37,28 +37,144 @@ public class SaveBillRate {
 
     /**
      * 1. member이름에 맞는 BillFormV2들 찾습니다. ( -> speicifedBillForm이라는 List에 넣음)
-     * 2. 그 정보들을 바탕으로 RateByArea 객체를 만들고, 통계값 넣은 뒤 member에 매핑합니다.
+     * 그 정보들을 바탕으로
+     * 2. List<BillFormV2> member에 매핑
+     * 2. RateByArea 객체를 만들고, 통계값 넣은 뒤 member에 매핑합니다.
      * 3. RateByProcess객체 만들고, 통계값 넣은 뒤 member에 매핑합니다.
-     *
+     * 4.
      *
      * n. member를 DB에 저장합니다.(
      */
     public void save(Member member) throws UnsupportedEncodingException, ParseException, IllegalAccessException, NoSuchFieldException {
 
-        //해당 이름을 가진 국회의원이 발의한 법률안(BillForm 형태로 저장)
+        //해당 이름을 가진 국회의원이 발의한 법률안 리스트
         List<BillFormV2> specifiedBillForm = BillApiV2.billByName(member.getName(), entireBills);
+
+
+
 
         //전체 법률안 개수
         int numOfBill = specifiedBillForm.size();
-
         member.setNumberOfBill(numOfBill);
 
 
         /*
+         * 법률안 리스트 member에 매핑
+         */
+        member.putBillsList(specifiedBillForm);
+
+        /*
          * RateByArea 설정
          */
+        RateByArea rateByArea = getRateByArea(specifiedBillForm, numOfBill);
+        member.setRateByArea(rateByArea);
 
-        // 위원회 별 법률안 카운트 세는 MAP
+
+        /*
+         * RateByProcess 설정
+         */
+        RateByProcess rateByProcess = getRateProcess(specifiedBillForm, numOfBill);
+        member.setRateByProcess(rateByProcess);
+
+
+        /*
+         * member를 DB에 저장
+         */
+        memberRepository.save(member);
+
+    }
+
+    private RateByProcess getRateProcess(List<BillFormV2> specifiedBillForm, int numOfBill) {
+        Map<String, Integer> processCount = new HashMap<>();
+
+
+        processCount.put("passNotRevised", 0);
+        processCount.put("passRevised", 0);
+        processCount.put("alternative", 0);
+        processCount.put("rejected", 0);
+        processCount.put("withdrawal", 0);
+        processCount.put("discard", 0);
+        processCount.put("etc", 0);
+
+
+        for(BillFormV2 billForm : specifiedBillForm){
+
+            String procResult = billForm.getProcResult();
+
+            if(procResult == null){
+                int etcCount = processCount.get("etc");
+                processCount.put("etc", ++etcCount);
+            } else {
+
+
+                switch (procResult) {
+                    case "원안가결" -> {
+                        int passNotRevisedCount = processCount.get("passNotRevised");
+                        processCount.put("passNotRevised", ++passNotRevisedCount);
+                    }
+                    case "수정가결" -> {
+                        int passRevisedCount = processCount.get("passRevised");
+                        processCount.put("passRevised", ++passRevisedCount);
+                    }
+                    case "대안반영폐기" -> {
+                        int alternativeCount = processCount.get("alternative");
+                        processCount.put("alternative", ++alternativeCount);
+                    }
+                    case "부결" -> {
+                        int rejectedCount = processCount.get("rejected");
+                        processCount.put("rejected", ++rejectedCount);
+                    }
+                    case "철회" -> {
+                        int withdrawalCount = processCount.get("withdrawal");
+                        processCount.put("withdrawal", ++withdrawalCount);
+                    }
+                    case "폐기" -> {
+                        int discardCount = processCount.get("discard");
+                        processCount.put("discard", ++discardCount);
+                    }
+                    default -> {
+                        int etcCount = processCount.get("etc");
+                        processCount.put("etc", ++etcCount);
+                    }
+                } // switch문 끝
+
+            }
+
+        } // for문 끝
+
+
+        // 처리상태별 통계값 담는 객체
+        RateByProcess rateByProcess = new RateByProcess();
+
+        try{
+
+            Field[] fields = rateByProcess.getClass().getDeclaredFields();
+
+            for(Field field : fields){
+                field.setAccessible(true);
+                String name = field.getName();
+
+                if(name != "id"){
+
+                    Integer billCount = processCount.get(name);
+
+                    if(billCount != 0){
+                        float result = (float) billCount / numOfBill;
+                        field.set(rateByProcess, result);
+                    } else {
+                        field.set(rateByProcess, 0F);
+                    }
+                }
+            } //for문
+
+
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        return rateByProcess;
+    }
+
+    private RateByArea getRateByArea(List<BillFormV2> specifiedBillForm, int numOfBill) {
         Map<String, Integer> committeeCount = new HashMap<>();
 
 
@@ -81,7 +197,6 @@ public class SaveBillRate {
         committeeCount.put("gender", 0);
         committeeCount.put("budget", 0);
         committeeCount.put("etc", 0);
-
 
 
         // 위원회 별 법률안 개수 카운트
@@ -207,109 +322,8 @@ public class SaveBillRate {
             e.printStackTrace();
 
         }
-
-        member.setRateByArea(rateByArea);
-
-
-
-
-        /*
-         * RateByProcess 설정
-         */
-        Map<String, Integer> processCount = new HashMap<>();
-
-
-        processCount.put("passNotRevised", 0);
-        processCount.put("passRevised", 0);
-        processCount.put("alternative", 0);
-        processCount.put("rejected", 0);
-        processCount.put("withdrawal", 0);
-        processCount.put("discard", 0);
-        processCount.put("etc", 0);
-
-
-        for(BillFormV2 billForm : specifiedBillForm){
-
-            String procResult = billForm.getProcResult();
-
-            if(procResult == null){
-                int etcCount = processCount.get("etc");
-                processCount.put("etc", ++etcCount);
-            } else {
-
-
-                switch (procResult) {
-                    case "원안가결" -> {
-                        int passNotRevisedCount = processCount.get("passNotRevised");
-                        processCount.put("passNotRevised", ++passNotRevisedCount);
-                    }
-                    case "수정가결" -> {
-                        int passRevisedCount = processCount.get("passRevised");
-                        processCount.put("passRevised", ++passRevisedCount);
-                    }
-                    case "대안반영폐기" -> {
-                        int alternativeCount = processCount.get("alternative");
-                        processCount.put("alternative", ++alternativeCount);
-                    }
-                    case "부결" -> {
-                        int rejectedCount = processCount.get("rejected");
-                        processCount.put("rejected", ++rejectedCount);
-                    }
-                    case "철회" -> {
-                        int withdrawalCount = processCount.get("withdrawal");
-                        processCount.put("withdrawal", ++withdrawalCount);
-                    }
-                    case "폐기" -> {
-                        int discardCount = processCount.get("discard");
-                        processCount.put("discard", ++discardCount);
-                    }
-                    default -> {
-                        int etcCount = processCount.get("etc");
-                        processCount.put("etc", ++etcCount);
-                    }
-                } // switch문 끝
-
-            }
-
-        } // for문 끝
-
-
-        // 처리상태별 통계값 담는 객체
-        RateByProcess rateByProcess = new RateByProcess();
-
-        try{
-
-            Field[] fields = rateByProcess.getClass().getDeclaredFields();
-
-            for(Field field : fields){
-                field.setAccessible(true);
-                String name = field.getName();
-
-                if(name != "id"){
-
-                    Integer billCount = processCount.get(name);
-
-                    if(billCount != 0){
-                        float result = (float) billCount / numOfBill;
-                        field.set(rateByProcess, result);
-                    } else {
-                        field.set(rateByProcess, 0F);
-                    }
-                }
-            } //for문
-
-
-        } catch(Exception e){
-            e.printStackTrace();
-        }
-
-        member.setRateByProcess(rateByProcess);
-
-
-        /*
-         * member를 DB에 저장
-         */
-        memberRepository.save(member);
-
+        return rateByArea;
     }
+
+
 }

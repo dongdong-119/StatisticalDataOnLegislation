@@ -4,9 +4,12 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import service.congressApi.domain.form.BillFormV2;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static javax.persistence.CascadeType.*;
@@ -32,7 +35,7 @@ public class Member {
      * 1. 전체 법률안 발의 수
      * 2. 분야별 법률안 비율(number도 할 수 있으면)
      * 3. 처리상태별 법률안 비율
-     * 4.
+     * 4. 해당 의원의 법률안 정보
      */
     private int numberOfBill;
 
@@ -45,12 +48,23 @@ public class Member {
     @JoinColumn(name= "PROCESS_RATE_ID")
     private RateByProcess rateByProcess;
 
+    @OneToMany(mappedBy = "member", cascade = ALL)
+    private List<BillFormV2> bills;
 
+
+
+    // 연관관계 편의 메서드(Member <-> BillFormV2)
+    public void putBillsList(List<BillFormV2> bills){
+        for (BillFormV2 bill : bills) {
+            bill.setMember(this);
+        }
+
+        this.bills = bills;
+    }
 
 
     public Member(String name) {
         this.name = name;
-        this.numberOfBill = numberOfBill;
     }
 
 
@@ -63,8 +77,7 @@ public class Member {
                 ", numberOfBill=" + numberOfBill +
                 ", rateByArea=" + rateByArea +
                 ", rateByProcess=" + rateByProcess +
+                ", bills=" + bills +
                 '}';
     }
-
-
 }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import service.congressApi.domain.form.BillFormV2;
 import service.congressApi.domain.repository.DataRepository;
 import service.congressApi.domain.repository.MemberRepository;
 import service.congressApi.domain.statistics.Member;
@@ -33,6 +34,7 @@ public class StatController {
                              @RequestParam("memberParty") String party,
                              Model model){
 
+
         List<Member> members = memberRepository.findByNameAndParty(name, party);
 
         boolean memberEmpty = members.isEmpty();
@@ -48,10 +50,13 @@ public class StatController {
             Member member = members.get(0);
             RateByArea areaData = dataRepository.findAreaData(member);
             RateByProcess processData = dataRepository.findProcessData(member);
+            List<BillFormV2> fiveBills = dataRepository.findFive(member);
+
 
             model.addAttribute("member", member);
             model.addAttribute("areaData", areaData);
             model.addAttribute("processData", processData);
+            model.addAttribute("fiveBills", fiveBills);
 
             return "memberInfo";
         }
