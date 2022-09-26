@@ -2,7 +2,7 @@
 Statistical Data On Legislation Proposed By Members of the National Assembly of Republic of Korea
 <h6>:key: 본 프로젝트는 국회 OPEN API를 이용하여 제작되었습니다.<h6>
 <h6>:page_facing_up: '열린국회정보'가 제공하는 <국회의원 발의법률안 API 명세서>에 참고하면 좋을 정보들을 담아 수정본을 만들었습니다. 해당 API를 이용하실 분들은 자유롭게 사용하시면 되겠습니다. 파일은 코드와 함께 첨부하였습니다.<h6>
-<h6>:link: 프로젝트 과정 설명 페이지 : https://tidal-ninja-be5.notion.site/OPEN-API-7accd2cb4c5c4f10a1031de68a029671</h6>
+<h6>:link: 프로젝트 과정 설명 포스팅 : https://dongdong-119.tistory.com/45</h6>
 <br/><br/>
 <h3>:bar_chart:본 프로젝트는 다음과 같은 데이터를 제공합니다.<h3>
 <p>1. 특정 국회의원이 발의한 법률안 수<p>
