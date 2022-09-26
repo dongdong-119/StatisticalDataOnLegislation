@@ -3,6 +3,21 @@ Statistical Data On Legislation Proposed By Members of the National Assembly of 
 <h6>:key: 본 프로젝트는 국회 OPEN API를 이용하여 제작되었습니다.<h6>
 <h6>:page_facing_up: '열린국회정보'가 제공하는 <국회의원 발의법률안 API 명세서>에 참고하면 좋을 정보들을 담아 수정본을 만들었습니다. 해당 API를 이용하실 분들은 자유롭게 사용하시면 되겠습니다. 파일은 코드와 함께 첨부하였습니다.<h6>
 <h6>:link: 프로젝트 과정 설명 포스팅 : https://dongdong-119.tistory.com/45</h6>
+<h6>:wrench: 기술 스택<h6> 
+  <img src="https://img.shields.io/badge/spring boot-6DB33F?style=for-the-badge&logo=spring boot&logoColor=white"> 
+  <img src="https://img.shields.io/badge/h2 database-FECC00?style=for-the-badge&logo=h2 database&logoColor=white">
+  <img src="https://img.shields.io/badge/jpa-311C87?style=for-the-badge&logo=jpa&logoColor=white">
+  <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
+  <img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">
+  <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css&logoColor=white">
+  <img src="https://img.shields.io/badge/amcharts-FF6384?style=for-the-badge&logo=amcharts&logoColor=white">
+  
+
+  
+
+  
+
+
 <br/><br/>
 <h3>:bar_chart:본 프로젝트는 다음과 같은 데이터를 제공합니다.<h3>
 <p>1. 특정 국회의원이 발의한 법률안 수<p>
