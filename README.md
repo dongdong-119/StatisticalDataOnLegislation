@@ -6,7 +6,7 @@ Statistical Data On Legislation Proposed By Members of the National Assembly of 
 <br/><br/>
 <h3>:bar_chart:본 프로젝트는 다음과 같은 데이터를 제공합니다.<h3>
 <p>1. 특정 국회의원이 발의한 법률안 수<p>
-<p>2. 특정 국회의원이 발의한 법률안 목록<p>(예정)
+<p>2. 특정 국회의원이 발의한 최신 법률안 목록<p>
 <p>3. 특정 국회의원이 발의한 법률안의 주제에 따른 분포<p>
 <p>4. 특정 국회의원이 발의한 법률안의 처리 상태에 따른 분포<p>
 
@@ -17,8 +17,14 @@ Statistical Data On Legislation Proposed By Members of the National Assembly of 
 <img width="1422" alt="Screen Shot 2022-09-21 at 10 52 59 AM" src="https://user-images.githubusercontent.com/85717356/191398207-d6b3da56-b8f1-45a6-853b-785c1cd39e6d.png">
 
 
-<h5><그림 2: 통계 info 페이지 - 국회의원 발의 법률안 통계 개괄, 분야별 발의, 처리상태별 정보 차트로 표시></h5>
-<img width="1422" alt="Screen Shot 2022-09-21 at 10 52 43 AM" src="https://user-images.githubusercontent.com/85717356/191398728-71587698-cbaa-4966-8e91-395077533d53.png">
+<h5><그림 2, 3: 통계 info 페이지 - 국회의원 발의 법률안 통계 개괄, 분야별 발의, 처리상태별 정보 차트로 표시></h5>
+<img width="1440" alt="Screen Shot 2022-09-26 at 4 20 26 PM" src="https://user-images.githubusercontent.com/85717356/192218483-e80a3709-b044-440a-b200-438de79a9f2e.png">
+<img width="1440" alt="Screen Shot 2022-09-26 at 4 20 32 PM" src="https://user-images.githubusercontent.com/85717356/192217446-ba3877ba-5f12-439e-995f-7dc2c4f68b9f.png">
+
+
+
+<h5><그림 3: 개관 및 각 통계에 대한 주의사항, 용어 정리를 확인할 수 있음><h5>
+<img width="1440" alt="Screen Shot 2022-09-26 at 4 20 50 PM" src="https://user-images.githubusercontent.com/85717356/192218592-4d1e4ed0-af39-4747-9369-3c78c0fb3812.png">
 
 
 <br/><br/><br/>
@@ -36,5 +42,10 @@ Statistical Data On Legislation Proposed By Members of the National Assembly of 
 
 <br/>
 
-> <h3>1차 수정 및 추가 기능 구현
-> 2022.09.22 ~ (개발중)<h3>
+> <h3>수정 및 추가 기능 구현
+> 2022.09.24 ~ 09.25.<h3>
+<h6>- 선택한 의원이 최근에 발의한 법률안 목록 표시<h6>
+<h6>- 분야별 법률안 차트 분류 수정<h6>
+<h6>- 각 차트에 대한 설명, 용어 정리를 포함한 팝오버 추가<h6>
+<h6>- 차트 색 수정<h6>
+<h6>- 코드 리팩토링<h6>
